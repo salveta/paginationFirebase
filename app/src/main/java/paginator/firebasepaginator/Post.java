@@ -1,5 +1,10 @@
 package paginator.firebasepaginator;
 
+import com.google.firebase.database.Exclude;
+import com.google.firebase.database.ServerValue;
+
+import java.util.HashMap;
+
 /**
  * Created by Salva on 01/09/2017.
  */
@@ -7,14 +12,15 @@ package paginator.firebasepaginator;
 public class Post {
     private String uid;
     private String text;
-    private Object timestamp;
-
+    private HashMap<String, Object> timestampCreated;
     public Post() {
     }
 
-    public Post(String text, Object timestamp) {
+    public Post(String text, HashMap<String, Object>  timestampCreatedObj) {
         this.text = text;
-        this.timestamp = timestamp;
+        timestampCreatedObj = new HashMap<String, Object>();
+        timestampCreatedObj.put("date", ServerValue.TIMESTAMP);
+        this.timestampCreated = timestampCreatedObj;
 
     }
 
@@ -24,8 +30,17 @@ public class Post {
         return text;
     }
 
-    public Object getTimestamp() {
-        return timestamp;
+//    public Object getTimestamp() {
+//        return timestamp;
+//    }
+
+    public HashMap<String, Object> getTimestampCreated(){
+        return timestampCreated;
+    }
+
+    @Exclude
+    public long getTimestampCreatedLong(){
+        return (long)timestampCreated.get("date");
     }
 
     public void setUid(String uid) {

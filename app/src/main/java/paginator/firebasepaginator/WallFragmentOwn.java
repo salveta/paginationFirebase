@@ -17,6 +17,7 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 /**
  * Created by Salva on 01/09/2017.
@@ -29,6 +30,7 @@ public class WallFragmentOwn extends Fragment {
     private int mRecyclerViewPosition = 0;
 
     private ArrayList<Post> postList = new ArrayList<>();
+    private ArrayList<Post> postListLoadItems = new ArrayList<>();
     private RecyclerView mRecyclerView;
     private WallAdapter mAdapter;
 
@@ -55,8 +57,8 @@ public class WallFragmentOwn extends Fragment {
 
         linearLayoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView.setLayoutManager(linearLayoutManager);
+
         mAdapter = new WallAdapter(postList);
-        mRecyclerView.setAdapter(mAdapter);
         mRecyclerView.setAdapter(mAdapter);
         mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -91,7 +93,8 @@ public class WallFragmentOwn extends Fragment {
                     Post post = postSnapshot.getValue(Post.class);
                     post.setUid(postSnapshot.getKey());
                     postList.add(post);
-                }
+            }
+                Collections.reverse(postList);
                 mAdapter.notifyDataSetChanged();
             }
 
@@ -104,8 +107,8 @@ public class WallFragmentOwn extends Fragment {
 
     public void loadMoreItems(){
         allPostsQuery = getBaseRef().child("posts").orderByChild("timestamp")
-                .endAt(postList.get(postList.size()-1).getTimestamp().toString())
-                .limitToLast(PAGESIZE);
+                .endAt(postList.get(postList.size()-1).getTimestampCreatedLong())
+                .limitToFirst(4);
         allPostsQuery.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -113,13 +116,24 @@ public class WallFragmentOwn extends Fragment {
                 if(dataSnapshot.getValue() == null){
                     return;
                 }
-                dataSnapshot.getChildrenCount();
+
+                int totalSize = postList.size();
+
                 for (DataSnapshot postSnapshot: dataSnapshot.getChildren()) {
                     Post post = postSnapshot.getValue(Post.class);
+
+                    if(postList.get(postList.size()-1).getTimestampCreatedLong() == post.getTimestampCreatedLong()){
+                        loading = false;
+                        return;
+                    }
+
                     post.setUid(postSnapshot.getKey());
-                    postList.add(post);
+                    postListLoadItems.add(post);
                 }
+                Collections.reverse(postListLoadItems);
+                postList.addAll(postListLoadItems);
                 mAdapter.notifyDataSetChanged();
+                loading = true;
             }
 
             @Override

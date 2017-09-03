@@ -50,7 +50,7 @@ public class WallAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         final Post post = postList.get(position);
         final WallAdapter.FavouritesViewHolder mHolder = (WallAdapter.FavouritesViewHolder) holder;
 
-        mHolder.post_timestamp.setText(DateUtils.getRelativeTimeSpanString((long) post.getTimestamp()).toString());
+        mHolder.post_timestamp.setText(DateUtils.getRelativeTimeSpanString((long) post.getTimestampCreatedLong()).toString());
         mHolder.post_text.setText(post.getText());
     }
 

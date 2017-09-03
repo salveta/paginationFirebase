@@ -8,6 +8,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ServerValue;
 
+import java.util.HashMap;
+
 import static paginator.firebasepaginator.WallFragmentOwn.getBaseRef;
 
 public class MainActivity extends AppCompatActivity {
@@ -31,8 +33,10 @@ public class MainActivity extends AppCompatActivity {
     public void createPost(){
         DatabaseReference postsRef = getBaseRef().child("posts");
 
+        HashMap<String, Object> timestampCreatedObj = new HashMap<String, Object>();
+        timestampCreatedObj.put("timestampCreated", ServerValue.TIMESTAMP);
 
-        Post newPost = new Post(String.valueOf(count), ServerValue.TIMESTAMP);
+        Post newPost = new Post(String.valueOf(count), timestampCreatedObj);
         postsRef.push().setValue(newPost);
         count ++;
 
