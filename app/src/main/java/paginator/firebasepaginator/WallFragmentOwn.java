@@ -83,7 +83,7 @@ public class WallFragmentOwn extends Fragment {
 
 
     public void loadData(){
-        allPostsQuery = getBaseRef().child("posts").orderByChild("timestamp").limitToLast(PAGESIZE);
+        allPostsQuery = getBaseRef().child("posts").orderByChild("timestampCreated").limitToLast(PAGESIZE);
         allPostsQuery.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -106,9 +106,11 @@ public class WallFragmentOwn extends Fragment {
 
 
     public void loadMoreItems(){
+        Log.e("counter search", postList.get(postList.size()-1).getText() + " , " +postList.get(postList.size()-1).getTimestampCreatedLong());
+
         allPostsQuery = getBaseRef().child("posts").orderByChild("timestamp")
                 .endAt(postList.get(postList.size()-1).getTimestampCreatedLong())
-                .limitToFirst(4);
+                .limitToFirst(PAGESIZE);
         allPostsQuery.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -125,6 +127,7 @@ public class WallFragmentOwn extends Fragment {
                         return;
                     }
 
+                    Log.e("counter", post.getText() + " , " +post.getTimestampCreatedLong());
                     post.setUid(postSnapshot.getKey());
                     postListLoadItems.add(post);
                 }

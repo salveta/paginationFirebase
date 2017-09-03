@@ -33,10 +33,10 @@ public class MainActivity extends AppCompatActivity {
     public void createPost(){
         DatabaseReference postsRef = getBaseRef().child("posts");
 
-        HashMap<String, Object> timestampCreatedObj = new HashMap<String, Object>();
-        timestampCreatedObj.put("timestampCreated", ServerValue.TIMESTAMP);
+        HashMap<String, Object> timestamp = new HashMap<String, Object>();
+        timestamp.put("timestamp", ServerValue.TIMESTAMP);
 
-        Post newPost = new Post(String.valueOf(count), timestampCreatedObj);
+        Post newPost = new Post(String.valueOf(count), timestamp);
         postsRef.push().setValue(newPost);
         count ++;
 
