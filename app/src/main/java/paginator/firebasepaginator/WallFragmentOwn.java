@@ -117,6 +117,8 @@ public class WallFragmentOwn extends Fragment {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
+                postListLoadItems.clear();
+
                 if(dataSnapshot.getValue() == null){
                     return;
                 }
@@ -125,7 +127,8 @@ public class WallFragmentOwn extends Fragment {
                     Post post = postSnapshot.getValue(Post.class);
 
                     if(postList.get(postList.size()-1).getTimestampCreatedLong() == post.getTimestampCreatedLong()){
-//                        return;
+                        setAdapter();
+                        return;
                     }
 
                     Log.e("counter", post.getText() + " , " +post.getTimestampCreatedLong());
@@ -133,16 +136,20 @@ public class WallFragmentOwn extends Fragment {
                     postListLoadItems.add(post);
                 }
 
-                Collections.reverse(postListLoadItems);
-                postList.addAll(postListLoadItems);
-                mAdapter.notifyDataSetChanged();
-                loading = true;
+                setAdapter();
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
             }
         });
+    }
+
+    public void setAdapter(){
+        Collections.reverse(postListLoadItems);
+        postList.addAll(postListLoadItems);
+        mAdapter.notifyDataSetChanged();
+        loading = true;
     }
 
     @Override
