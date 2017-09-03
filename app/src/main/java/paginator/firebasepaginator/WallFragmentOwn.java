@@ -117,8 +117,6 @@ public class WallFragmentOwn extends Fragment {
                     return;
                 }
 
-                int totalSize = postList.size();
-
                 for (DataSnapshot postSnapshot: dataSnapshot.getChildren()) {
                     Post post = postSnapshot.getValue(Post.class);
 
