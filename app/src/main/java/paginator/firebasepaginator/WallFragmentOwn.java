@@ -83,7 +83,7 @@ public class WallFragmentOwn extends Fragment {
 
 
     public void loadData(){
-        allPostsQuery = getBaseRef().child("posts").orderByChild("timestampCreated").limitToLast(PAGESIZE);
+        allPostsQuery = getBaseRef().child("posts").orderByChild("timestampCreated/date").limitToLast(PAGESIZE);
         allPostsQuery.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -93,7 +93,9 @@ public class WallFragmentOwn extends Fragment {
                     Post post = postSnapshot.getValue(Post.class);
                     post.setUid(postSnapshot.getKey());
                     postList.add(post);
-            }
+                    Log.e("counter", post.getText() + " , " +post.getTimestampCreatedLong());
+
+                }
                 Collections.reverse(postList);
                 mAdapter.notifyDataSetChanged();
             }
@@ -108,9 +110,9 @@ public class WallFragmentOwn extends Fragment {
     public void loadMoreItems(){
         Log.e("counter search", postList.get(postList.size()-1).getText() + " , " +postList.get(postList.size()-1).getTimestampCreatedLong());
 
-        allPostsQuery = getBaseRef().child("posts").orderByChild("timestamp")
+        allPostsQuery = getBaseRef().child("posts").orderByChild("timestampCreated/date")
                 .endAt(postList.get(postList.size()-1).getTimestampCreatedLong())
-                .limitToFirst(PAGESIZE);
+                .limitToLast(PAGESIZE);
         allPostsQuery.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -123,14 +125,14 @@ public class WallFragmentOwn extends Fragment {
                     Post post = postSnapshot.getValue(Post.class);
 
                     if(postList.get(postList.size()-1).getTimestampCreatedLong() == post.getTimestampCreatedLong()){
-                        loading = false;
-                        return;
+//                        return;
                     }
 
                     Log.e("counter", post.getText() + " , " +post.getTimestampCreatedLong());
                     post.setUid(postSnapshot.getKey());
                     postListLoadItems.add(post);
                 }
+
                 Collections.reverse(postListLoadItems);
                 postList.addAll(postListLoadItems);
                 mAdapter.notifyDataSetChanged();
